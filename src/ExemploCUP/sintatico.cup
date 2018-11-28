@@ -1,0 +1,43 @@
+package ExemploCUP;
+import java_cup.runtime.*;
+import java.util.*;
+import java.io.*;
+parser code {:   
+  public void report_error(String message, Object info)  { 
+      System.out.println("AVISO - " + message);  
+      System.out.println(info.toString());                
+}
+  public void report_fatal_error(String message, Object info)  {
+        System.out.println("ERRO - " + message);         
+        System.exit(-1);
+    }               
+:};
+
+terminal IMPRIME, NEW, INICIO, ABRECHV, FECHACHV, PTVG;
+terminal PARAM, VG, ABREP, FECHAP, IGUAL, OPERADOR, TIPO;
+terminal ID, NUMERO, LITERAL;
+   
+non terminal program, comandos, comando, obj, decl, decl1, decl2;
+non terminal print, atrib, expr, expr1, expr2, fator;
+
+
+start with program;
+//declaracao das producoes da gramatica
+program  ::= INICIO ABRECHV comandos FECHACHV;
+comandos ::= comando comandos | comando;
+comando  ::= decl | obj | atrib | print;
+
+print ::= IMPRIME ABREP fator FECHAP PTVG;
+fator ::= ID | NUMERO | LITERAL;
+
+obj ::= ID ID IGUAL NEW ID  PARAM PTVG;
+
+decl  ::= TIPO ID decl1;
+decl1 ::= PTVG | decl2;
+decl2 ::= VG ID decl1;
+
+atrib ::= ID IGUAL expr PTVG;
+
+expr  ::= fator IGUAL expr1;
+expr1 ::= PTVG | fator OPERADOR expr2;
+expr2 ::= fator PTVG expr1;
